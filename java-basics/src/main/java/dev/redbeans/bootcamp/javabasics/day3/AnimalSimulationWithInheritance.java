@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AnimalSimulationWithInheritance {
+public class AnimalSimulationWithInheritance implements Simulation {
 
     private List<Animal> animals = new ArrayList<>();
 
@@ -93,6 +93,10 @@ public class AnimalSimulationWithInheritance {
             System.out.println("name " + animal.getName());
             ((Roarable) animal).roar();
         }
+    }
+
+    public String getName() {
+        return "with-inheritance";
     }
 
 

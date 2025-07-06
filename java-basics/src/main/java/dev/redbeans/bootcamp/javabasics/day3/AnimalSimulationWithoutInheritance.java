@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class AnimalSimulationWithoutInheritance {
+public class AnimalSimulationWithoutInheritance implements Simulation {
 
     private List<Dog> dogs= new ArrayList<>();
     private List<Lion> lions = new ArrayList<>();
@@ -92,6 +92,10 @@ public class AnimalSimulationWithoutInheritance {
         }
         System.out.println("Simulation finished!");
 
+    }
+
+    public String getName() {
+        return "without-inheritance";
     }
 
 }
