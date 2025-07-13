@@ -1,14 +1,20 @@
 package dev.redbeans.bootcamp.javabasics.day3;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.*;
 
 
 public class SimulationRunner {
 
-
+//  private static List<Simulation> simulationClasses = new ArrayList<>();
     private static Map<String, Simulation> simulations = new HashMap<>();
+    // The current code uses List<Class>, which is a raw type and not type-safe.
+    // To make it type-safe, use List<Class<?>>. This ensures the list only contains Class objects
+    // of any type and avoids raw type warnings.
+//    private static List<Class<?>> simulationClasses = List.of(
+//            AnimalSimulationWithInheritance.class,
+//            AnimalSimulationWithoutInheritance.class,
+//            TestSimulation.class
+//    );
 
 
     public static void main(String[] args) {

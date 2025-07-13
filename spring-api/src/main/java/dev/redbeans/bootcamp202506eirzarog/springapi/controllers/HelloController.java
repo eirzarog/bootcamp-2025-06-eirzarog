@@ -1,4 +1,4 @@
-package dev.redbeans.bootcamp202506eirzarog.springapi;
+package dev.redbeans.bootcamp202506eirzarog.springapi.controllers;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestController
 public class HelloController {
     // http://localhost:8080/search?q=java+spring+boot+hello+world+example
-    // http://localhost:8080/hello?name=Eirini
+    // http://localhost:8080/hello?name=Eirini&param2=value2
     @GetMapping("/hello")
     public String hello(@RequestParam(required = false) String name){
 
