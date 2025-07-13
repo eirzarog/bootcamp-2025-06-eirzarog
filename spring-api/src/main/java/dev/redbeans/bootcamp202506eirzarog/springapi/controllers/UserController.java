@@ -1,7 +1,12 @@
 package dev.redbeans.bootcamp202506eirzarog.springapi.controllers;
 
+import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.BootcampException;
+import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.BootcampExceptionHandler;
+import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.ErrorMessage;
 import dev.redbeans.bootcamp202506eirzarog.springapi.models.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,10 +86,9 @@ public class UserController {
         // Validate the user object, e.g., check for null fields, unique username, etc.
         for (User existingUser : users) {
             if (existingUser.getUsername().equals(user.getUsername())) {
-//                logger.error("Username with username: " + user.getUsername() + " already exists.");
-                throw new Exception("Username with username: " + user.getUsername() + " already exists.");
-
-
+                //logger.error("Username with username: " + user.getUsername() + " already exists.");
+//                throw new Exception("Username with username: " + user.getUsername() + " already exists."); // breakpoint here
+                throw new BootcampException(HttpStatus.BAD_REQUEST,"Username with username: " + user.getUsername() + " already exists."); // breakpoint here
 
             }
         }
@@ -95,7 +99,30 @@ public class UserController {
         return user; // Return the created user
     }
 
-//    Spring Boot uses Jackson ObjectMapper (by default) to automatically map JSON data from HTTP requests to Java objects.
+//    @PostMapping("/users")
+//    public ResponseEntity<Object> createUser(@RequestBody User user) {
+//        // Validate the user object, e.g., check for null fields, unique username, etc.
+//        for (User existingUser : users) {
+//            if (existingUser.getUsername().equals(user.getUsername())) {
+//                HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+//
+//                ErrorMessage errorMessage = new ErrorMessage();
+//                errorMessage.setErrorMessage("Username with username: " + user.getUsername() + " already exists.");
+//                errorMessage.setErrorCode(status.value());
+//
+//                return ResponseEntity.status(status).body(errorMessage);
+//            }
+//        }
+//        user.setId(users.size() + 1L); // Assign a new ID based on the current size of the list
+//
+//        // Logic to create a new user
+//        users.add(user);
+////        return user; // Return the created user
+//        return ResponseEntity.ok(user); // Return the created user with HTTP 500 OK status
+//    }
+
+
+    //    Spring Boot uses Jackson ObjectMapper (by default) to automatically map JSON data from HTTP requests to Java objects.
 //    When you annotate a controller method parameter with @RequestBody, Spring Boot deserializes the incoming JSON
 //    into the specified Java class using Jackson, matching JSON fields to Java fields by name. The class must have//
 //    getters and setters for its properties.
