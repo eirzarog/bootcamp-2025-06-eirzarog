@@ -4,6 +4,8 @@ import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.BootcampExceptio
 import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.BootcampExceptionHandler;
 import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.ErrorMessage;
 import dev.redbeans.bootcamp202506eirzarog.springapi.models.User;
+import dev.redbeans.bootcamp202506eirzarog.springapi.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -22,30 +24,34 @@ import java.util.List;
 public class UserController {
 
 //    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
+@Autowired
+private UserRepository userRepository;
 
 //  I suppose that this is my database a list of users.
-    private List<User> users = new ArrayList<>();
+//    private List<User> users = new ArrayList<>();
 
     public UserController(){
         // Initializing with some dummy data
-        User user1 = new User();
-        user1.setId(1L);
-        user1.setUsername("john_doe");
-        user1.setEmail("jdoe@example.com");
-        user1.setPassword("password123");
-        user1.setName("John Doe");
-
-        User user2 = new User();
-        user2.setId(2L);
-        user2.setUsername("nick_morris");
-        user2.setEmail("nmorris@redbeans.com");
-        user2.setPassword("password456");
-        user2.setName("Nick Morris");
+//        User user1 = new User();
+//        user1.setId(1L);
+//        user1.setUsername("john_doe");
+//        user1.setEmail("jdoe@example.com");
+//        user1.setPassword("password123");
+//        user1.setName("John Doe");
+//        user1.setRole("SIMPLE_USER");
+//
+//        User user2 = new User();
+//        user2.setId(2L);
+//        user2.setUsername("nick_morris");
+//        user2.setEmail("nmorris@redbeans.com");
+//        user2.setPassword("password456");
+//        user2.setName("Nick Morris");
+//        user2.setRole("ADMINISTRATOR_USER");
+//
 
         // Adding users to the list
-        users.add(user1);
-        users.add(user2);
+//        users.add(user1);
+//        users.add(user2);
 
 //        users.add(new User("john_doe", "jdoe@example.com", "password123", "John Doe"));
 //        users.add(new User("nick_morris", "nmorris@redbeans.com", "password456", "Nick Morris"));
@@ -55,7 +61,9 @@ public class UserController {
 
     @GetMapping("/users")
     public List<User> getAllUsers(){
-        return users;
+
+//        return users;
+         return userRepository.findAll();
     }
 
     // id is a path variable that represents the unique identifier of a user.
@@ -71,33 +79,43 @@ public class UserController {
 //                .filter(user -> user.getUsername().equals(id))
 //                .findFirst()
 //                .orElse(null);
+// ----- ΤΟ ΠΑΡΑΚΑΤΩ ΗΤΑΝ ΤΟ ΠΡΟ Ο ΤΕΛΕΥΤΑΙΟΣ ΚΩΔΙΚΑ ΠΟΥ ΕΙΧΑ ΓΡΑΨΕΙ ----
+//        for (User user : users) {
+//            if (user.getUsername().equals(username)) {
+//               return user;
+//            }
+//
+//        }
+//        return null; // or throw an exception if user not found
+        return userRepository.findUserByUsername(username);
 
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-               return user;
-            }
 
-        }
-        return null; // or throw an exception if user not found
     }
 
     @PostMapping("/users")
     public User createUser(@RequestBody User user) throws Exception {
-        // Validate the user object, e.g., check for null fields, unique username, etc.
-        for (User existingUser : users) {
-            if (existingUser.getUsername().equals(user.getUsername())) {
-                //logger.error("Username with username: " + user.getUsername() + " already exists.");
-//                throw new Exception("Username with username: " + user.getUsername() + " already exists."); // breakpoint here
-                throw new BootcampException(HttpStatus.BAD_REQUEST,"Username with username: " + user.getUsername() + " already exists."); // breakpoint here
-
-            }
-        }
-        user.setId(users.size() + 1L); // Assign a new ID based on the current size of the list
-
-        // Logic to create a new user
-        users.add(user);
-        return user; // Return the created user
-    }
+//        // Validate the user object, e.g., check for null fields, unique username, etc.
+//        for (User existingUser : users) {
+//            if (existingUser.getUsername().equals(user.getUsername())) {
+//                //logger.error("Username with username: " + user.getUsername() + " already exists.");
+////                throw new Exception("Username with username: " + user.getUsername() + " already exists."); // breakpoint here
+//                throw new BootcampException(HttpStatus.BAD_REQUEST,"Username with username: " + user.getUsername() + " already exists."); // breakpoint here
+//
+//            }
+//        }
+//        user.setId(users.size() + 1L); // Assign a new ID based on the current size of the list
+//
+//        // Logic to create a new user
+//        users.add(user);
+//        return user; // Return the created user
+//
+//        User existingUser = userRepository.findUserByUsername(user.getUsername());
+//        if (existingUser != null) {
+//            throw new BootcampException(HttpStatus.BAD_REQUEST, "User with username " + user.getUsername() + " already exists.");
+//        }
+// ----============================================
+        user = userRepository.save(user);
+        return user;    }
 
 //    @PostMapping("/users")
 //    public ResponseEntity<Object> createUser(@RequestBody User user) {
@@ -126,34 +144,42 @@ public class UserController {
 //    When you annotate a controller method parameter with @RequestBody, Spring Boot deserializes the incoming JSON
 //    into the specified Java class using Jackson, matching JSON fields to Java fields by name. The class must have//
 //    getters and setters for its properties.
-    @PutMapping("/users/{username}")
-    public User updateUser(@PathVariable String username, @RequestBody User updatedUser) throws Exception {
-        // Logic to find the user by username and update their information
-        for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
-            if (user.getUsername().equals(username)) {
-                // Update the user's information
-                user.setEmail(updatedUser.getEmail());
-                user.setPassword(updatedUser.getPassword());
-                user.setName(updatedUser.getName());
-                return user; // Return the updated user
-            }
-        }
-        throw new Exception("User with username: " + username + " not found.");
-    }
 
-    @DeleteMapping("/users/{username}")
-    public String deleteUser(@PathVariable String username) throws Exception {
-        // Logic to find the user by username and delete them
-        for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
-            if (user.getUsername().equals(username)) {
-                users.remove(i); // Remove the user from the list
-                return "User with username: " + username + " has been deleted.";
-            }
-        }
-        throw new Exception("User with username: " + username + " not found.");
-    }
+
+// ========== AYTO NA TO KANΩ ΜΕ USER REPOSITORY ------
+//    @PutMapping("/users/{username}")
+//    public User updateUser(@PathVariable String username, @RequestBody User updatedUser) throws Exception {
+//        // Logic to find the user by username and update their information
+//        for (int i = 0; i < users.size(); i++) {
+//            User user = users.get(i);
+//            if (user.getUsername().equals(username)) {
+//                // Update the user's information
+//                user.setEmail(updatedUser.getEmail());
+//                user.setPassword(updatedUser.getPassword());
+//                user.setName(updatedUser.getName());
+//                return user; // Return the updated user
+//            }
+//        }
+//        throw new Exception("User with username: " + username + " not found.");
+//    }
+
+
+// ---- ΑΥΤΟ ΝΑ ΤΟ ΚΑΝΩ ΜΕ USER REPOSITORY ----
+//    @DeleteMapping("/users/{username}")
+//    public String deleteUser(@PathVariable String username) throws Exception {
+//        // Logic to find the user by username and delete them
+//        for (int i = 0; i < users.size(); i++) {
+//            User user = users.get(i);
+//            if (user.getUsername().equals(username)) {
+//                users.remove(i); // Remove the user from the list
+//                return "User with username: " + username + " has been deleted.";
+//            }
+//        }
+//        throw new Exception("User with username: " + username + " not found.");
+//    }
+// -===========
+
+
 
     // This class is currently empty, but you can add methods to handle user-related requests.
     // For example, you might want to add methods to create, update, delete, or retrieve user information.
