@@ -18,6 +18,15 @@ public class SimulationRunner {
 
 
     public static void main(String[] args) {
+        Animal b = new Ant("Anty", 5, 6);
+        System.out.println(((Ant)b).getLegs()); // προσοχή για runtime error ClassCastException
+//        Ant a = new Ant();
+////        // OBJECT toString default implementation
+////        public String toString() {
+////            return getClass().getName() + "@" + Integer.toHexString(hashCode());
+////        }
+//        System.out.println(a.toString());
+//        System.out.println( a.getHungerLevel());
 
 //        System.out.print("Arguments passed to the program: ");
 //        for (String arg : args) {

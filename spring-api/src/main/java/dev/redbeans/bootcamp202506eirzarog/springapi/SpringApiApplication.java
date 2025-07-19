@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EntityScan(basePackageClasses = User .class) // Ensure that the User class is scanned for JPA entities
-@EnableJpaRepositories(basePackageClasses = UserRepository.class)
+@EntityScan(basePackageClasses = User.class)
+@EnableJpaRepositories(basePackageClasses = {UserRepository.class})
 public class SpringApiApplication {
 
     public static void main(String[] args) {

@@ -20,12 +20,34 @@ import java.util.List;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 
+// This is a Spring Boot controller class that handles user-related HTTP requests.
+
 @RestController
 public class UserController {
 
 //    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+
+//    Autowired είναι απλά ένας τρόπος να πεις στο Spring να κάνει inject μια instance
+//    μιας κλάσης σε μια άλλη κλάση.
+
+//    Συνήθως χρησιμοποιώ το Autowired για Service classes που θέλω να χρησιμοποιήσω
+//    στα RestControllers μου, στα unit tests, και σε άλλες Component classes.
+//    Αυτό γίνεται με Java Reflection, βρίσκοντας Spring Components με το όνομα της κλάσης και
+//    μετά βάζοντας την τιμή της ιδιότητας σε μια instance αυτής της κλάσης.
+//    Η προεπιλογή στο Spring είναι ότι τα Components είναι Singletons, οπότε μια
+//    Autowired ιδιότητα για το ίδιο Service (π.χ.) σε μια κλάση θα είναι η ίδια instance σε μια άλλη κλάση.
+//    Πρέπει να βεβαιωθείς ότι κρατάς τις Autowired classes χωρίς κατάσταση (stateless) ??????????????? εξαιτίας
+//    του προεπιλεγμένου Singleton scope.
 @Autowired
-private UserRepository userRepository;
+private UserRepository userRepository; // field injection
+
+//    Υπάρχει ένα μέρος που δεν μπορείς να το αποφύγεις: Αν οι εξαρτήσεις σου είναι κυκλικές.
+//    Η Α εξαρτάται από τη Β. Η Β εξαρτάται από την Α. Η μία μπορεί να σταλεί μέσω constructive,
+//    αλλά η άλλη θα μπει μόνο μέσω autowired annotation. Αλλά αυτό είναι antipattern.
+//    Πρέπει να αποφύγουμε όλες τις κυκλικές εξαρτήσεις.???????????????????????????????
+//    Παρεμπιπτόντως, αυτή η annotation είναι deprecated. Οπότε αν δεν την χρησιμοποιείς -
+//    αυτό είναι μια σωστή δομή εξαρτήσεων.
 
 //  I suppose that this is my database a list of users.
 //    private List<User> users = new ArrayList<>();
@@ -91,6 +113,12 @@ private UserRepository userRepository;
 
 
     }
+
+//    // Overloading the method to demonstrate how to handle multiple parameters
+//    public User getUserByUsername(@PathVariable String username, Integer x) {
+//        return userRepository.findUserByUsername(username);
+//    }
+
 
     @PostMapping("/users")
     public User createUser(@RequestBody User user) throws Exception {
