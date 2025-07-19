@@ -1,7 +1,6 @@
 package dev.redbeans.bootcamp202506eirzarog.springapi.models;
 
 import jakarta.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 
