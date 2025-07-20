@@ -6,12 +6,22 @@ import dev.redbeans.bootcamp202506eirzarog.springapi.repositories.UserRepository
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
 @Service
+//@Scope( "prototype" ) // Optional: Use prototype scope if you want a new instance for each injection
+//@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) // Default scope is singleton, can be omitted
+@Scope(
+        value         = WebApplicationContext.SCOPE_REQUEST,
+        proxyMode     = ScopedProxyMode.TARGET_CLASS
+) // Use request scope for web applications, proxy mode allows for lazy loading
 public class UserService {
 
     Logger logger = LoggerFactory.getLogger(UserService.class);

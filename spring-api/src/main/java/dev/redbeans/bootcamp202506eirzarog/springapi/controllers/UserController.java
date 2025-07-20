@@ -5,12 +5,16 @@ import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.BootcampExceptio
 import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.ErrorMessage;
 import dev.redbeans.bootcamp202506eirzarog.springapi.models.User;
 import dev.redbeans.bootcamp202506eirzarog.springapi.repositories.UserRepository;
+import dev.redbeans.bootcamp202506eirzarog.springapi.services.MySingleton;
 import dev.redbeans.bootcamp202506eirzarog.springapi.services.UserService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +27,13 @@ import java.util.List;
 //import org.slf4j.LoggerFactory;
 
 // This is a Spring Boot controller class that handles user-related HTTP requests.
-
+// Εάν δεν είχε γίνει injection του UserService, θα έπρεπε να το κάνω χειροκίνητα με new UserService().
+// SCOPE REQUEST θα χρειαζόταν να γίνει για κάθε φορά που γίνεται ένα HTTP request, καθώς η κλάση UserService έχει η ίδια SCOPE REQUEST.
 @RestController
+@Scope(
+        value         = WebApplicationContext.SCOPE_REQUEST,
+        proxyMode     = ScopedProxyMode.TARGET_CLASS
+) // Use request scope for web applications, proxy mode allows for lazy loading
 public class UserController {
 
     Logger logger = org.slf4j.LoggerFactory.getLogger(UserController.class);
@@ -39,6 +48,10 @@ public class UserController {
         this.userService = userService;
         this.userRepository = userRepository;
         logger.debug("UserController initialized with UserService.  Reference to:{}", this);
+        MySingleton mySingleton = MySingleton.getInstance(); // Δείχνουν στο ίδιο αντικείμενο και οι δύο μεταβλητές
+        MySingleton mySingleton2 = MySingleton.getInstance(); // Δείχνουν στο ίδιο αντικείμενο και οι δύο μεταβλητές
+        logger.debug("mySingleton:{}", mySingleton);
+        logger.debug("mySingleton2:{}", mySingleton2);
         }
 
 
@@ -98,9 +111,11 @@ public class UserController {
 
     @GetMapping("/users")
     public List<User> getAllUsers(){
-
+        logger.debug("Get all users from UserController with UserService. Reference to:{}", this);
 //        return users;
-         return userRepository.findAll();
+//         return userRepository.findAll();
+
+        return userService.getAll(); // Using UserService to get all users
     }
 
     // id is a path variable that represents the unique identifier of a user.

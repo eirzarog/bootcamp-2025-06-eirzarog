@@ -1,8 +1,11 @@
 package dev.redbeans.bootcamp202506eirzarog.springapi.controllers;
 
 import dev.redbeans.bootcamp202506eirzarog.springapi.models.Message;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -10,6 +13,11 @@ import java.util.List;
 
 @RestController
 //@RequestMapping("/api")
+@Scope(
+        value         = WebApplicationContext.SCOPE_REQUEST,
+        proxyMode     = ScopedProxyMode.TARGET_CLASS
+)
+
 public class MessageController {
 
 
