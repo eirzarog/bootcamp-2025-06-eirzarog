@@ -5,6 +5,8 @@ import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.BootcampExceptio
 import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.ErrorMessage;
 import dev.redbeans.bootcamp202506eirzarog.springapi.models.User;
 import dev.redbeans.bootcamp202506eirzarog.springapi.repositories.UserRepository;
+import dev.redbeans.bootcamp202506eirzarog.springapi.services.UserService;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +27,27 @@ import java.util.List;
 @RestController
 public class UserController {
 
-//    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    Logger logger = org.slf4j.LoggerFactory.getLogger(UserController.class);
+
+    private UserService userService;
+    private UserRepository userRepository; // field injection is antipattern with @Autowired annotation
+//    private ChatController chatController;
 
 
-//    Autowired είναι απλά ένας τρόπος να πεις στο Spring να κάνει inject μια instance
-//    μιας κλάσης σε μια άλλη κλάση.
+    @Autowired
+    public UserController(UserService userService, UserRepository userRepository) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+        logger.debug("UserController initialized with UserService.  Reference to:{}", this);
+        }
+
+
+
+//    @GetMapping("/users/{username}")
+//    public User getUserByUserName(@PathVariable String username) {
+//        return userService.getUserByUsername(username);
+//    }
+
 
 //    Συνήθως χρησιμοποιώ το Autowired για Service classes που θέλω να χρησιμοποιήσω
 //    στα RestControllers μου, στα unit tests, και σε άλλες Component classes.
@@ -39,9 +57,6 @@ public class UserController {
 //    Autowired ιδιότητα για το ίδιο Service (π.χ.) σε μια κλάση θα είναι η ίδια instance σε μια άλλη κλάση.
 //    Πρέπει να βεβαιωθείς ότι κρατάς τις Autowired classes χωρίς κατάσταση (stateless) ??????????????? εξαιτίας
 //    του προεπιλεγμένου Singleton scope.
-@Autowired
-private UserRepository userRepository; // field injection
-
 //    Υπάρχει ένα μέρος που δεν μπορείς να το αποφύγεις: Αν οι εξαρτήσεις σου είναι κυκλικές.
 //    Η Α εξαρτάται από τη Β. Η Β εξαρτάται από την Α. Η μία μπορεί να σταλεί μέσω constructive,
 //    αλλά η άλλη θα μπει μόνο μέσω autowired annotation. Αλλά αυτό είναι antipattern.
@@ -213,47 +228,11 @@ private UserRepository userRepository; // field injection
     // For example, you might want to add methods to create, update, delete, or retrieve user information.
     // You can use annotations like @GetMapping, @PostMapping, @PutMapping, and @DeleteMapping
     // to define the endpoints for these operations.
-
-    // Example method:
-    // @GetMapping("/users")
-    // public List<User> getAllUsers() {
-    //     return userService.getAllUsers();
-    // }
-
-    // You can also inject services or repositories to handle business logic and data access.
-    // For example:
-    // @Autowired
-
-    // private UserService userService;
-    // public UserController(UserService userService) {
-    //     this.userService = userService;
-    // }
     // You can also define request parameters, path variables, and request bodies
     // using annotations like @RequestParam, @PathVariable, and @RequestBody.
-    // For example:
-    // @PostMapping("/users")
-    // public User createUser(@RequestBody User user) {
-    //     return userService.createUser(user);
-    // }
     // Remember to handle exceptions and return appropriate HTTP status codes
     // using annotations like @ResponseStatus or by throwing exceptions that are handled by a global exception handler.
     // You can also use @RestControllerAdvice to handle exceptions globally for your controllers.
-    // This class can be expanded with methods to handle user-related operations.
-    // For example, you might want to add methods to create, update, delete, or retrieve user information.
-    // Example method:
-    // @GetMapping("/users/{id}")
-    // public User getUserById(@PathVariable Long id) {
-    //     return userService.getUserById(id);
-    // }
     // You can also use annotations like @RequestMapping to define the base path for all methods in this controller.
-    // @RequestMapping("/users")
-    // public class UserController {
-    //     // Methods for user operations go here
-    // }
     // You can also use @Autowired to inject services or repositories to handle business logic and data access.
-    // For example:
-    // @Autowired
-    // private UserService userService;
-    // public UserController(UserService userService) {
-    //     this.userService = userService;
 }

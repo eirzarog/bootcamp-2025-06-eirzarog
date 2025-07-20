@@ -36,16 +36,24 @@ public class ChatService {
             }
 
             // If user exists, fetch chats by username
-            return chatRepository.findChatsByUsername(username);
+// return new ArrayList<>();        }
         }
 
-        return new ArrayList<>();
+        return chatRepository.findChatsByUsername(username);
     }
 
     public List<Chat> getAll(ChatCriteria criteria) throws BootcampException {
 
-        Instant twoYearsAgo = Instant.now().minusSeconds(60 * 60 * 24 * 365 * 2);
+        // Business validation - ensure user exists if username provided
+        if (criteria.getUsername() != null) {
+            User user = userRepository.findUserByUsername(criteria.getUsername());
+            if (!user.getUsername().equals(criteria.getUsername())) {
+                throw new BootcampException(HttpStatus.NOT_FOUND, "User with username '" + criteria.getUsername() + "' not found.");
+            }
+        }
 
+        Instant twoYearsAgo = Instant.now().minusSeconds(60 * 60 * 24 * 365 * 2);
+        // Validate 'from' date is not more than two years ago
         if (criteria.getFrom() != null && criteria.getFrom().isBefore(twoYearsAgo)) {
             throw new BootcampException(HttpStatus.BAD_REQUEST,
                     "The 'from' date cannot be more than two years ago.");
@@ -56,4 +64,6 @@ public class ChatService {
                 criteria.getFrom(),
                 criteria.getTo());
     }
+
+
 }
