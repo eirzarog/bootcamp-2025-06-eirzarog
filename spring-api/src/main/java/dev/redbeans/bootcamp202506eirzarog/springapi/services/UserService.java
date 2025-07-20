@@ -10,6 +10,9 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -22,7 +25,7 @@ import java.util.List;
         value         = WebApplicationContext.SCOPE_REQUEST,
         proxyMode     = ScopedProxyMode.TARGET_CLASS
 ) // Use request scope for web applications, proxy mode allows for lazy loading
-public class UserService {
+public class UserService implements UserDetailsService {
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -52,6 +55,13 @@ public class UserService {
 
     public User getUserByUsername(String username) {
         return userRepository.findUserByUsername(username);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = getUserByUsername(username);
+
+        return user;
     }
 
 

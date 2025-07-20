@@ -1,8 +1,6 @@
 package dev.redbeans.bootcamp202506eirzarog.springapi.controllers;
 
 import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.BootcampException;
-import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.BootcampExceptionHandler;
-import dev.redbeans.bootcamp202506eirzarog.springapi.exceptions.ErrorMessage;
 import dev.redbeans.bootcamp202506eirzarog.springapi.models.User;
 import dev.redbeans.bootcamp202506eirzarog.springapi.repositories.UserRepository;
 import dev.redbeans.bootcamp202506eirzarog.springapi.services.MySingleton;
@@ -13,10 +11,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.security.core.Authentication;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // This is a placeholder for the UserController class in a Spring Boot application.
@@ -110,14 +107,16 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers(){
-        logger.debug("Get all users from UserController with UserService. Reference to:{}", this);
-//        return users;
-//         return userRepository.findAll();
+    public List<User> getAllUsers(Authentication authentication) throws BootcampException {
 
-        return userService.getAll(); // Using UserService to get all users
+        User loggedInUser = (User)authentication.getPrincipal(); // Get the logged-in user from the authentication object
+
+        if (!loggedInUser.getRole().equals("ADMINISTRATOR_USER")) {
+            throw new BootcampException(HttpStatus.FORBIDDEN, "You are not allowed to access this resource.");
+        }
+
+        return userService.getAll();
     }
-
     // id is a path variable that represents the unique identifier of a user.
 
     @GetMapping("/users/{username}")

@@ -1,10 +1,15 @@
 package dev.redbeans.bootcamp202506eirzarog.springapi.models;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users", schema = "public")
-public class User {
+public class User implements UserDetails {
     // Fields
     // Note: In a real application, you would typically use @Id and @GeneratedValue for the id field.
     @Id
@@ -43,6 +48,37 @@ public class User {
         this.role = role;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+//        return UserDetails.super.isAccountNonExpired();
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+//        return UserDetails.super.isAccountNonLocked();
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+//        return UserDetails.super.isCredentialsNonExpired();
+        return true;
+    }
+
+
+    @Override
+    public boolean isEnabled() {
+//        return UserDetails.super.isEnabled();
+        return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+
     public Long getId() {
         return id;
     }
@@ -52,7 +88,6 @@ public class User {
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
